@@ -32,6 +32,7 @@ namespace CoCall
                 if (wav.Length >= 8 * 1000 * 1000 / 8)
                 {
                     MessageBox.Show("File too Big!");
+                    return false;
                 }
             }
             catch (Exception err)
