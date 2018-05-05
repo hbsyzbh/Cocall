@@ -19,6 +19,12 @@ namespace CoCall
 
         private bool checkFileIsValied(String filepath)
         {
+            if (filepath == "")
+            {
+                MessageBox.Show("Please Select WAV file");
+                return false;
+            }
+
             if (!File.Exists(filepath))
             {
                 MessageBox.Show("Can not read file:" + filepath);
@@ -71,8 +77,91 @@ namespace CoCall
 
         }
 
+        private byte[] makeXmodeFrame(byte framenumber, byte []data, int len)
+        {
+/*
+ * 
+SOH              0x01          //Xmodem数据头
+STX              0x02           //1K-Xmodem数据头
+EOT              0x04           //发送结束
+ACK             0x06           //认可响应
+NAK             0x15           //不认可响应
+CAN             0x18           //撤销传送
+CTRLZ         0x1A          //填充数据包  
+                                                       Xmodem包格式
+       Byte1                      Byte2                  Byte3                 Byte4~131            Byte132~133
+
+    Start Of Header          Packet Number          ~(Packet Number)          Packet Data            16-Bit CR
+ */
+
+            byte[] a = new byte[133];
+
+            a[0] = 0x01;
+            a[1] = framenumber;
+            a[2] = (byte)~framenumber;
+
+            for(int i = 0; i<128; i++)
+            {
+                if (i < len)
+                    a[3 + i] = data[i];
+                else
+                    a[3 + i] = 0x1A;
+            }
+
+            return a;
+        }
+
+        private void trySendWaveFileUnderXModem()
+        {
+            try
+            {
+                byte []data = new byte [128];
+                byte packetnum = 0;
+                int len;
+                int offset = 0;
+                FileStream wav = System.IO.File.OpenRead(textBox1.Text);
+
+                long total = wav.Length;
+
+
+                while (0 != (len = wav.Read(data, 0, 128)))
+                {
+                    offset += len;
+                    byte[] buff = makeXmodeFrame(packetnum++, data, len);
+                    MessageBox.Show(buff.ToString());
+                    progressBar1.Value = (int)((double)offset * (double)100 / (double)total);
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message);
+            }
+        }
+
         private void button3_Click(object sender, EventArgs e)
         {
+            if (comboBox1.Text == "")
+            {
+                MessageBox.Show("No COM port selected!!!");
+                return;
+            }
+
+            if (! checkFileIsValied(textBox1.Text))
+            {
+                return;
+            }
+
+            try
+            {
+                serialPort1.PortName = comboBox1.Text;
+                serialPort1.Open();
+                trySendWaveFileUnderXModem();
+                serialPort1.Close();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message);
+            }
 
         }
 
@@ -91,6 +180,7 @@ namespace CoCall
                 comboBox1.Items.Add(str);
             }
         }
+
 
         private void comboBox1_Click(object sender, EventArgs e)
         {
