@@ -111,6 +111,49 @@ CTRLZ         0x1A          //填充数据包
             return a;
         }
 
+        private bool tryHandShakeOK()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                serialPort1.ReadTimeout = 1000;
+                serialPort1.DiscardInBuffer();
+                serialPort1.Write("C");
+                try
+                {
+                    int rec = serialPort1.ReadByte();
+                    if (rec == 0x06)
+                        return true;
+                }
+                catch (Exception err)
+                {
+                    ;
+                }
+            }
+
+            return false;
+        }
+
+        private bool askEndOk()
+        {
+            byte [] buff = new byte[1];
+
+            buff[0] = 0x04;
+            serialPort1.DiscardInBuffer();
+            serialPort1.Write(buff, 0, 1);
+            try
+            {
+                int rec = serialPort1.ReadByte();
+                if (rec == 0x04)
+                    return true;
+            }
+            catch (Exception err)
+            {
+                ;
+            }
+
+            return false;
+        }
+
         private void trySendWaveFileUnderXModem()
         {
             try
@@ -123,13 +166,46 @@ CTRLZ         0x1A          //填充数据包
 
                 long total = wav.Length;
 
+                if (! tryHandShakeOK())
+                {
+                    throw new Exception("COMMU error"); 
+                    //return;
+                }
 
                 while (0 != (len = wav.Read(data, 0, 128)))
                 {
-                    offset += len;
                     byte[] buff = makeXmodeFrame(packetnum++, data, len);
-                    MessageBox.Show(buff.ToString());
-                    progressBar1.Value = (int)((double)offset * (double)100 / (double)total);
+                    //MessageBox.Show(buff.ToString());
+
+                    for (; ; )
+                    {
+                        serialPort1.Write(buff, 0, buff.Length);
+                        int rec = serialPort1.ReadByte();
+
+                        if (rec == 0x06)  //ack
+                        {
+                            offset += len;
+                            progressBar1.Value = (int)((double)offset * (double)100 / (double)total);
+                            break;
+                        }
+                        else if (rec == 0x15)//nak
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            throw new Exception("commu error");
+                            //return;
+                        }
+                    }
+
+                    serialPort1.DiscardInBuffer(); //容错，抗干扰。
+
+                }
+
+                if (!askEndOk())
+                {
+                    throw new Exception("File transfer OK, but saving seems not done.");
                 }
             }
             catch (Exception err)
