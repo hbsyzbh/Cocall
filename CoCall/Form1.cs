@@ -74,8 +74,30 @@ namespace CoCall
 
         private void label1_Click(object sender, EventArgs e)
         {
-
+            
         }
+
+        private ushort CRC16_XMODEM(byte []puchMsg, uint usDataLen)  
+        {  
+            ushort wCRCin = 0x0000;  
+            ushort wCPoly = 0x1021;
+            ushort wChar = 0;
+            int pos = 0;
+
+            while ( pos < usDataLen)     
+            {
+                wChar = puchMsg[pos++];
+                wCRCin ^= (ushort)(wChar << 8);  
+                for(int i = 0;i < 8;i++)  
+                {  
+                    if((wCRCin & 0x8000) != 0 )
+                    wCRCin = (ushort)((wCRCin << 1) ^ wCPoly);  
+                    else
+                        wCRCin = (ushort)(wCRCin << 1);  
+                }
+            }  
+            return (wCRCin) ;  
+        }  
 
         private byte[] makeXmodeFrame(byte framenumber, byte []data, int len)
         {
@@ -107,6 +129,11 @@ CTRLZ         0x1A          //填充数据包
                 else
                     a[3 + i] = 0x1A;
             }
+
+            ushort crcresule = CRC16_XMODEM(data, 128);
+
+            a[131] = (byte)(crcresule / 256);
+            a[132] = (byte)(crcresule % 256);
 
             return a;
         }
