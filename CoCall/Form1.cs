@@ -186,7 +186,7 @@ CTRLZ         0x1A          //填充数据包
             try
             {
                 byte []data = new byte [128];
-                byte packetnum = 0;
+                byte packetnum = 1;
                 int len;
                 int offset = 0;
                 FileStream wav = System.IO.File.OpenRead(textBox1.Text);
