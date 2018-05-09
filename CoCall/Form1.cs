@@ -130,7 +130,11 @@ CTRLZ         0x1A          //填充数据包
                     a[3 + i] = 0x1A;
             }
 
-            ushort crcresule = CRC16_XMODEM(data, 128);
+            byte []tmp = new byte[128];
+            for(int i =0; i < 128; i++)
+                tmp[i] = a[3+i];
+
+            ushort crcresule = CRC16_XMODEM(tmp, 128);
 
             a[131] = (byte)(crcresule / 256);
             a[132] = (byte)(crcresule % 256);
@@ -181,7 +185,7 @@ CTRLZ         0x1A          //填充数据包
             return false;
         }
 
-        private void trySendWaveFileUnderXModem()
+        private void trySendWaveFileUnderXModem(bool bDebug = false)
         {
             try
             {
@@ -193,10 +197,13 @@ CTRLZ         0x1A          //填充数据包
 
                 long total = wav.Length;
 
-                if (! tryHandShakeOK())
+                if (!bDebug)
                 {
-                    throw new Exception("COMMU error"); 
-                    //return;
+                    if (!tryHandShakeOK())
+                    {
+                        throw new Exception("COMMU error");
+                        //return;
+                    }
                 }
 
                 while (0 != (len = wav.Read(data, 0, 128)))
@@ -206,8 +213,17 @@ CTRLZ         0x1A          //填充数据包
 
                     for (; ; )
                     {
-                        serialPort1.Write(buff, 0, buff.Length);
-                        int rec = serialPort1.ReadByte();
+                        int rec = 0x06;
+
+                        if (!bDebug)
+                        {
+                            serialPort1.Write(buff, 0, buff.Length);
+                            rec = serialPort1.ReadByte();
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buff));
+                        }
 
                         if (rec == 0x06)  //ack
                         {
@@ -226,13 +242,19 @@ CTRLZ         0x1A          //填充数据包
                         }
                     }
 
-                    serialPort1.DiscardInBuffer(); //容错，抗干扰。
+                    if (!bDebug)
+                    {
+                        serialPort1.DiscardInBuffer(); //容错，抗干扰。
+                    }
 
                 }
 
-                if (!askEndOk())
+                if (!bDebug)
                 {
-                    throw new Exception("File transfer OK, but saving seems not done.");
+                    if (!askEndOk())
+                    {
+                        throw new Exception("File transfer OK, but saving seems not done.");
+                    }
                 }
             }
             catch (Exception err)
@@ -288,6 +310,11 @@ CTRLZ         0x1A          //填充数据包
         private void comboBox1_Click(object sender, EventArgs e)
         {
             refreshcomport();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            trySendWaveFileUnderXModem(true);
         }
     }
 }

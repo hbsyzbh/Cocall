@@ -39,6 +39,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -112,7 +113,7 @@
             // 
             // button3
             // 
-            this.button3.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button3.Font = new System.Drawing.Font("SimSun", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button3.Location = new System.Drawing.Point(172, 191);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(132, 48);
@@ -128,11 +129,23 @@
             this.progressBar1.Size = new System.Drawing.Size(494, 16);
             this.progressBar1.TabIndex = 8;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(290, 80);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(58, 23);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 266);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.pictureBox1);
@@ -162,6 +175,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
