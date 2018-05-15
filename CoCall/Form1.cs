@@ -246,7 +246,6 @@ CTRLZ         0x1A          //填充数据包
                     {
                         serialPort1.DiscardInBuffer(); //容错，抗干扰。
                     }
-
                 }
 
                 if (!bDebug)
@@ -256,6 +255,7 @@ CTRLZ         0x1A          //填充数据包
                         throw new Exception("File transfer OK, but saving seems not done.");
                     }
                 }
+                wav.Close();
             }
             catch (Exception err)
             {
@@ -315,6 +315,8 @@ CTRLZ         0x1A          //填充数据包
         private void button1_Click(object sender, EventArgs e)
         {
             trySendWaveFileUnderXModem(true);
+            Form2 a = new Form2(textBox1.Text);
+            a.ShowDialog();
         }
     }
 }
