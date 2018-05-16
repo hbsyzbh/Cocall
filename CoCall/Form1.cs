@@ -40,6 +40,50 @@ namespace CoCall
                     MessageBox.Show("File too Big!");
                     return false;
                 }
+
+                byte[] wavHead = new byte[64];
+                wav.Read(wavHead, 0, 40);
+                Byte a = (byte)'R';
+                if ((wavHead[0] == (byte)'R' )&&
+                    (wavHead[1] == (byte)'I') &&
+                    (wavHead[2] == (byte)'F') &&
+                    (wavHead[3] == (byte)'F') &&
+                    (wavHead[8] == (byte)'W') &&
+                    (wavHead[9] == (byte)'A') &&
+                    (wavHead[10] == (byte)'V') &&
+                    (wavHead[11] == (byte)'E') &&
+                    (wavHead[12] == (byte)'f') &&
+                    (wavHead[13] == (byte)'m') &&
+                    (wavHead[14] == (byte)'t')
+                ) {
+                    ulong sample = wavHead[24];
+                    sample += ((ulong)(wavHead[25]) << 8);
+                    sample += ((ulong)(wavHead[26]) << 16);
+                    sample += ((ulong)(wavHead[27]) << 24);
+                    
+                    ulong BitsPerSample = wavHead[34];
+                    BitsPerSample += ((ulong)(wavHead[35]) << 8);
+
+                    if (sample != 11025)
+                    {
+                        MessageBox.Show("SampleRate is not 11.025K!");
+                        return false;
+                    }
+
+                    if ((BitsPerSample != 8) && (BitsPerSample != 16))
+                    {
+                        MessageBox.Show("Only support 8bits and 16bits now!");
+                        return false;
+                    }
+
+
+                } else {
+                    MessageBox.Show("Not a recognized wav file!");
+                    return false;
+                }
+
+
+
             }
             catch (Exception err)
             {
