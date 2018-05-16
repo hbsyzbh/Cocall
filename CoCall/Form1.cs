@@ -66,8 +66,9 @@ namespace CoCall
 
                     if (sample != 11025)
                     {
-                        MessageBox.Show("SampleRate is not 11.025K!");
-                        return false;
+                        ;
+                        //MessageBox.Show("SampleRate is not 11.025K!");
+                        //return false;
                     }
 
                     if ((BitsPerSample != 8) && (BitsPerSample != 16))
@@ -238,7 +239,7 @@ CTRLZ         0x1A          //填充数据包
                 int len;
                 int offset = 0;
                 FileStream wav = System.IO.File.OpenRead(textBox1.Text);
-
+                wav.Seek(0, SeekOrigin.Begin);
                 long total = wav.Length;
 
                 if (!bDebug)
@@ -297,6 +298,10 @@ CTRLZ         0x1A          //填充数据包
                     if (!askEndOk())
                     {
                         throw new Exception("File transfer OK, but saving seems not done.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Transfer done!");
                     }
                 }
                 wav.Close();
