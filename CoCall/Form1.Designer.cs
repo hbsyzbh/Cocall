@@ -40,6 +40,8 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.button1 = new System.Windows.Forms.Button();
+            this.txtBits = new System.Windows.Forms.TextBox();
+            this.txtHz = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,7 +115,7 @@
             // 
             // button3
             // 
-            this.button3.Font = new System.Drawing.Font("SimSun", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button3.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button3.Location = new System.Drawing.Point(172, 191);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(132, 48);
@@ -139,11 +141,33 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // txtBits
+            // 
+            this.txtBits.Location = new System.Drawing.Point(108, 147);
+            this.txtBits.Name = "txtBits";
+            this.txtBits.ReadOnly = true;
+            this.txtBits.Size = new System.Drawing.Size(63, 21);
+            this.txtBits.TabIndex = 10;
+            this.txtBits.Text = "0Bits";
+            this.txtBits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txtHz
+            // 
+            this.txtHz.Location = new System.Drawing.Point(221, 147);
+            this.txtHz.Name = "txtHz";
+            this.txtHz.ReadOnly = true;
+            this.txtHz.Size = new System.Drawing.Size(104, 21);
+            this.txtHz.TabIndex = 11;
+            this.txtHz.Text = "0Hz";
+            this.txtHz.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 266);
+            this.Controls.Add(this.txtHz);
+            this.Controls.Add(this.txtBits);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button3);
@@ -175,6 +199,8 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtBits;
+        private System.Windows.Forms.TextBox txtHz;
     }
 }
 

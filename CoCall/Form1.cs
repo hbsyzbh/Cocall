@@ -66,9 +66,8 @@ namespace CoCall
 
                     if (sample != 11025)
                     {
-                        ;
-                        //MessageBox.Show("SampleRate is not 11.025K!");
-                        //return false;
+                        MessageBox.Show("Only support SampleRate 11.025K!");
+                        return false;
                     }
 
                     if ((BitsPerSample != 8) && (BitsPerSample != 16))
@@ -76,6 +75,9 @@ namespace CoCall
                         MessageBox.Show("Only support 8bits and 16bits now!");
                         return false;
                     }
+
+                    txtBits.Text = "" + BitsPerSample.ToString() + "Bits";
+                    txtHz.Text = sample + "Hz";
 
 
                 } else {
@@ -107,7 +109,10 @@ namespace CoCall
 
                 if ( ! checkFileIsValied(textBox1.Text))
                 {
-                    textBox1.Text = "";    
+                    textBox1.Text = "";
+
+                    txtBits.Text = "0Bits";
+                    txtHz.Text = "0Hz";
                 }
             }
         }
